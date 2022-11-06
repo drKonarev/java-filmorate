@@ -20,7 +20,7 @@ public class FilmController {
     private int id = 0;
 
     @PostMapping()
-    public Film post(@Valid@RequestBody Film film) {
+    public Film post(@Valid @RequestBody Film film) {
         validate(film);
         Film createdFilm = create(film);
         films.put(createdFilm.getId(), createdFilm);
@@ -35,18 +35,23 @@ public class FilmController {
     @PutMapping()
     public Film update(@Valid @RequestBody Film film) {
         validate(film);
-        if (!(films.containsKey(film.getId()))){
+        if (!(films.containsKey(film.getId()))) {
             throw new ValidationException("Film with this id doesn't exist!");
         }
         films.put(film.getId(), film);
         return film;
     }
 
+    @DeleteMapping("{id}")
+    public void delete(@PathVariable("id") int filmId ){
+        films.remove(filmId);
+    }
+
     private void validate(Film film) throws ValidationException {
         if (film.getReleaseDate().isBefore(FIRST_DATE)) {
             throw new ValidationException("Release time is too early for movie!");
         }
-        if(film.getName().isBlank()){
+        if (film.getName().isBlank()) {
             throw new ValidationException("Incorrect film data!");
         }
     }

@@ -42,6 +42,10 @@ public class UserController {
         users.put(user.getId(), user);
         return user;
     }
+    @DeleteMapping(path = "{id}")
+    public void delete(@PathVariable("id") int userId ){
+        users.remove(userId);
+    }
 
 
     private void validate(User user) {
