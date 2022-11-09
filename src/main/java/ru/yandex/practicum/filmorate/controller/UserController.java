@@ -17,6 +17,7 @@ public class UserController {
     private final HashMap<Integer, User> users = new HashMap<>();
     private int id = 0;
 
+
     @GetMapping()
     public List<User> findAll() {
         return new ArrayList<>(users.values());
@@ -42,8 +43,9 @@ public class UserController {
         users.put(user.getId(), user);
         return user;
     }
+
     @DeleteMapping(path = "{id}")
-    public void delete(@PathVariable("id") int userId ){
+    public void delete(@PathVariable("id") int userId) {
         users.remove(userId);
     }
 
@@ -54,18 +56,18 @@ public class UserController {
         }
     }
 
-    private User create(User user){
+    private User create(User user) {
         User createdUser;
         if (user.getName() == null || user.getName().isBlank()) {
-             createdUser =  User.builder()
+            createdUser = User.builder()
                     .id(++id)
                     .email(user.getEmail())
                     .login(user.getLogin())
                     .name(user.getLogin())
                     .birthday(user.getBirthday())
                     .build();
-        } else{
-             createdUser= User.builder()
+        } else {
+            createdUser = User.builder()
                     .id(++id)
                     .email(user.getEmail())
                     .login(user.getLogin())
@@ -74,5 +76,13 @@ public class UserController {
                     .build();
         }
         return createdUser;
+    }
+
+    public void testValidate(User user) {
+        validate(user);
+    }
+
+    public User testCreate(User user) {
+        return create(user);
     }
 }
