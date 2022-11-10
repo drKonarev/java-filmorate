@@ -22,9 +22,9 @@ public class FilmController {
     @PostMapping()
     public Film post(@Valid@RequestBody Film film) {
         validate(film);
-        Film createdFilm = create(film);
-        films.put(createdFilm.getId(), createdFilm);
-        return createdFilm;
+        film.setId(++id);
+        films.put(film.getId(), film);
+        return film;
     }
 
     @GetMapping()
@@ -51,15 +51,9 @@ public class FilmController {
         }
     }
 
-    private Film create(Film film) {
-        return Film.builder()
-                .description(film.getDescription())
-                .duration(film.getDuration())
-                .id(++id)
-                .releaseDate(film.getReleaseDate())
-                .name(film.getName())
-                .build();
+    public void test(Film film) {
+        validate(film);
     }
 
-//тесты на два метода валиидации - для фильма и юзера
+
 }

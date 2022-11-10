@@ -71,4 +71,12 @@ public class UserController {
         }
         return createdUser;
     }
+
+    public User testCreate(User user){
+        return create(user);
+    }
+
+    public void testValidate(User user) {
+        validate(user);
+    }
 }
