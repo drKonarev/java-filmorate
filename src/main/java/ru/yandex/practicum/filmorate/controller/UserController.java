@@ -33,6 +33,7 @@ public class UserController {
         return createdUser;
     }
 
+
     @PutMapping()
     public User put(@Valid @RequestBody User user) throws ValidationException {
         validate(user);
@@ -43,6 +44,11 @@ public class UserController {
         return user;
     }
 
+    @DeleteMapping(path = "{id}")
+    public void delete(@PathVariable("id") int userId) {
+        if (users.containsKey(userId))users.remove(userId);
+        else throw new ValidationException("Not found film with such id - " + userId);
+    }
 
     private void validate(User user) {
         if (user.getLogin().contains(" ")) {
@@ -50,18 +56,18 @@ public class UserController {
         }
     }
 
-    private User create(User user){
+    private User create(User user) {
         User createdUser;
         if (user.getName() == null || user.getName().isBlank()) {
-             createdUser =  User.builder()
+            createdUser = User.builder()
                     .id(++id)
                     .email(user.getEmail())
                     .login(user.getLogin())
                     .name(user.getLogin())
                     .birthday(user.getBirthday())
                     .build();
-        } else{
-             createdUser= User.builder()
+        } else {
+            createdUser = User.builder()
                     .id(++id)
                     .email(user.getEmail())
                     .login(user.getLogin())
@@ -72,11 +78,4 @@ public class UserController {
         return createdUser;
     }
 
-    public User testCreate(User user){
-        return create(user);
-    }
-
-    public void testValidate(User user) {
-        validate(user);
-    }
 }
