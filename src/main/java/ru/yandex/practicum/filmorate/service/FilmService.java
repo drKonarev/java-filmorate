@@ -50,7 +50,7 @@ public class FilmService {
     }
 
     public void like(Integer filmId, Integer userId) {
-        userStorage.doesExist(userId); // проверяем существование пользователя
+        userStorage.doesExist(userId);
         filmStorage.like(filmId, userId);
     }
 

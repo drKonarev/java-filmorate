@@ -26,8 +26,8 @@ public class Film {
     private final LocalDate releaseDate;
     @Positive
     private final int duration;
-   
-    private Set<Integer> likes; //хранит список ай юзеров, которые поставили лайк
+
+    private Set<Integer> likes;
 
 
 }

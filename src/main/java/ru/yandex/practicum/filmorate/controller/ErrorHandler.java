@@ -23,14 +23,14 @@ public class ErrorHandler {
         return new ErrorResponse(ex.getMessage());
     }
 
-    @ExceptionHandler//({ValidationException.class})
+    @ExceptionHandler({ValidationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse validationError(IllegalArgumentException ex) {
         return new ErrorResponse(ex.getMessage());
     }
 
 
-    @ExceptionHandler
+    @ExceptionHandler ({Throwable.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse internalError(Throwable ex) {
         return new ErrorResponse("Happened something internal!");

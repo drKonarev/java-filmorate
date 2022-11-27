@@ -6,6 +6,7 @@ import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserService {
@@ -36,7 +37,7 @@ public class UserService {
     }
 
     public void addFriend(Integer id, Integer friendId) {
-        if (id==friendId) throw new RuntimeException("You can't add yourself to friendList");
+        if (Objects.equals(id, friendId)) throw new RuntimeException("You can't add yourself to friendList");
         User user = userStorage.get(id);
         User friend = userStorage.get(friendId);
         user.addFriend(friendId);

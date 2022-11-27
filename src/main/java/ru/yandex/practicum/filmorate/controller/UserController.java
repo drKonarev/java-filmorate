@@ -55,15 +55,12 @@ public class UserController {
 
     @PostMapping()
     public User post(@Valid @RequestBody User user) throws ValidationException {
-
         return userService.post(user);
-
     }
 
 
     @PutMapping()
     public User put(@Valid @RequestBody User user) throws ValidationException {
-
         return userService.put(user);
     }
 

@@ -6,10 +6,7 @@ import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class InMemoryUserStorage implements UserStorage {
@@ -64,38 +61,27 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     private User create(User user) {
-        User createdUser;
-        if (user.getName() == null || user.getName().isBlank()) {
-            createdUser = User.builder()
-                    .id(++id)
-                    .email(user.getEmail())
-                    .login(user.getLogin())
-                    .name(user.getLogin())
-                    .birthday(user.getBirthday())
-                    .friends(new HashSet<>())
-                    .build();
-        } else {
-            createdUser = User.builder()
-                    .id(++id)
-                    .email(user.getEmail())
-                    .login(user.getLogin())
-                    .name(user.getName())
-                    .birthday(user.getBirthday())
-                    .friends(new HashSet<>())
-                    .build();
-        }
-        return createdUser;
+        String name = user.getName() == null || user.getName().isBlank() ? user.getLogin() : user.getName();
+
+        return User.builder()
+                .id(++id)
+                .email(user.getEmail())
+                .birthday(user.getBirthday())
+                .friends(new HashSet<>())
+                .login(user.getLogin())
+                .name(name)
+                .build();
     }
 
     private void validate(User user) {
-        if (user.getLogin().contains(" ")) {
+        if (user.getLogin().contains(" ") || user.getLogin().isBlank())
             throw new ValidationException("Incorrect login format!");
-        }
     }
 
 
     @Override
     public void doesExist(Integer id) {
-        if (!users.containsKey(id)) throw new UserNotFoundException("Not found user with such id - " + id);
+        if (!users.containsKey(id))
+            throw new UserNotFoundException("Not found user with such id - " + id);
     }
 }

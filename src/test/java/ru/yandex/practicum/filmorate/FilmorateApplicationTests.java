@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.controller.UserController;
+import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
+import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
@@ -84,7 +86,7 @@ class FilmorateApplicationTests {
                 .id(5)
                 .birthday(LocalDate.of(1997, 5, 14))
                 .build();
-        Assertions.assertThrows(ValidationException.class, () -> userCont.put(otherTest));
+        Assertions.assertThrows(UserNotFoundException.class, () -> userCont.put(otherTest));
         Assertions.assertEquals(userCont.findAll().get(0).getName(), "name");
     }
 
@@ -98,7 +100,7 @@ class FilmorateApplicationTests {
                 .build();
         userCont.post(test);
         Assertions.assertEquals(userCont.findAll().size(), 1);
-        Assertions.assertThrows(ValidationException.class, () -> userCont.delete(5));
+        Assertions.assertThrows(UserNotFoundException.class, () -> userCont.delete(5));
         Assertions.assertEquals(userCont.findAll().size(), 1);
     }
 
@@ -136,7 +138,7 @@ class FilmorateApplicationTests {
                 .build();
         filmCont.post(film);
         Assertions.assertEquals(filmCont.findAll().size(), 1);
-        Assertions.assertThrows(ValidationException.class, () -> filmCont.delete(2));
+        Assertions.assertThrows(FilmNotFoundException.class, () -> filmCont.delete(2));
         Assertions.assertEquals(filmCont.findAll().size(), 1);
     }
 
@@ -159,6 +161,6 @@ class FilmorateApplicationTests {
                 .duration(100)
                 .build();
 
-        Assertions.assertThrows(ValidationException.class, () -> filmCont.put(test));
+        Assertions.assertThrows(FilmNotFoundException.class, () -> filmCont.put(test));
     }
 }

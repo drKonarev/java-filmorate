@@ -24,7 +24,6 @@ public class FilmController {
 
     @PostMapping()
     public Film post(@Valid @RequestBody Film film) {
-
         return filmService.post(film);
     }
 
@@ -40,7 +39,6 @@ public class FilmController {
 
     @PutMapping()
     public Film put(@Valid @RequestBody Film film) {
-
         return filmService.put(film);
     }
 
