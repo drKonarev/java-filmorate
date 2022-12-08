@@ -6,7 +6,4 @@ public class ValidationException extends  IllegalArgumentException{
         super(mess);
     }
 
-    public ValidationException(){
-        super();
-    }
 }
