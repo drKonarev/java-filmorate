@@ -12,7 +12,7 @@
 <h1 align="center">Filmorate ER-diagram</h1>
 <h2 align="center">
 
-![Filmorate scheme](https://github.com/drKonarev/java-filmorate/blob/main/assets/images/Filmorate%20scheme.jpg)
+![Filmorate scheme](https://github.com/drKonarev/java-filmorate/blob/main/Filmorate%20scheme.jpg)
 
 </h2>
 
@@ -35,12 +35,12 @@ FROM film
 WHERE film_id=2;
 ```
 ____________________________________________________
-### Запрос на получение списка фильмов конкретного жанра:
+### Запрос на получение списка фильмов конкретного рейтинга:
 
 ```sql
 SELECT name
 FROM film AS f
-INNER JOIN genre AS g 
-ON g.genre_id=f.genre_id
-WHERE g.name='horror';
+INNER JOIN mpa
+ON mpa.mpa_id=f.mpa_id
+WHERE mpa.name='R17';
 ```
