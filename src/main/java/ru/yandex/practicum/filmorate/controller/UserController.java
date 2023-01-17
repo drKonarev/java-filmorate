@@ -40,7 +40,7 @@ public class UserController {
     @GetMapping(value = "/{id}/friends/common/{otherId}")
     public List<User> commonFriends(@PathVariable("id") Integer id,
                                     @PathVariable("otherId") Integer otherId) {
-        return userService.commonFriends(id, otherId);
+        return userService.getCommonFriends(id, otherId);
     }
 
     @GetMapping()
@@ -50,7 +50,7 @@ public class UserController {
 
     @GetMapping(value = "/{id}")
     public User get(@PathVariable("id") Integer id) {
-        return userService.get(id);
+        return userService.get(id).get();
     }
 
     @PostMapping()
