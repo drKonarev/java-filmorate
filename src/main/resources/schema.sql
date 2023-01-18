@@ -1,10 +1,7 @@
-/*
 
 DROP TABLE IF EXISTS GENRES CASCADE;
 DROP TABLE IF EXISTS MPA CASCADE;
 
-
-*/
 DROP TABLE IF EXISTS USERS CASCADE;
 DROP TABLE IF EXISTS FRIENDS CASCADE;
 DROP TABLE IF EXISTS FILMS CASCADE;
@@ -15,7 +12,7 @@ DROP TABLE IF EXISTS LIKES CASCADE;
 
   create TABLE if not exists   FILMS
 (
-    FILM_ID      serial primary key , --small-serial
+    FILM_ID      serial primary key ,
     NAME         VARCHAR(50)  not null UNIQUE,
     DESCRIPTION  VARCHAR(255) not null,
     DURATION     INTEGER                not null,
@@ -25,7 +22,7 @@ DROP TABLE IF EXISTS LIKES CASCADE;
 
  create table if not exists  GENRES
 (
-    GENRE_ID serial primary key, --small-serial
+    GENRE_ID serial primary key,
     NAME     VARCHAR(15) not null UNIQUE
 );
 
@@ -38,7 +35,7 @@ DROP TABLE IF EXISTS LIKES CASCADE;
 
  create table if not exists  MPA
 (
-    MPA_ID serial primary key, --small-serial
+    MPA_ID serial primary key,
     NAME   VARCHAR(10) not null unique
 );
 
@@ -53,7 +50,7 @@ alter table films
 
  create table if not exists  USERS
 (
-    USER_ID  serial primary key , --small-serial
+    USER_ID  serial primary key ,
     EMAIL    VARCHAR(50) not null UNIQUE,
     LOGIN    VARCHAR(50) not null,
     NAME     VARCHAR(50) not null,

@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.exception.FilmNotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.MpaStorage;
@@ -64,22 +63,26 @@ public class FilmDbStorage implements FilmStorage {
                 film.getMpa().getId(),
                 film.getReleaseDate());
 
-        jdbcTemplate.update("delete from FILM_GENRE where FILM_ID = ? ",film.getId() ); //обнуление информации о жанрах фильма
+        jdbcTemplate.update("delete from FILM_GENRE where FILM_ID = ? ", film.getId()); //обнуление информации о жанрах фильма
 
-        if (!film.getGenres().isEmpty() || film.getGenres() != null) {
+/*        if (!film.getGenres().isEmpty() || film.getGenres() != null) {
             String sqlGenre = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?)";
             for (Genre genre : film.getGenres()) {
                 jdbcTemplate.update(sqlGenre, film.getId(), genre.getId());
             }
-        }
-        film.getGenres().clear();
+        }*/
 
+        genreStorage.postGenresByFilm(film);
+        film.getGenres().clear();
+/*
         String genresSql = "SELECT * FROM FILM_GENRE WHERE FILM_ID =? ORDER BY GENRE_ID ASC";
         SqlRowSet sqlGenres = jdbcTemplate.queryForRowSet(genresSql, film.getId());
-        while (sqlGenres.next()){
+        while (sqlGenres.next()) {
             film.getGenres().add(
                     genreStorage.getGenre(sqlGenres.getInt("GENRE_ID")));
-        }
+        }*/
+
+        film.getGenres().addAll(genreStorage.getGenresByFilm(film.getId()));
 
         log.info("Обновлен фильм с id: {} !", film.getId());
         return film;
@@ -103,12 +106,8 @@ public class FilmDbStorage implements FilmStorage {
 
         film.setId(simpleJdbcInsert.executeAndReturnKey(parameters).intValue());
 
-        if (!film.getGenres().isEmpty() || film.getGenres() != null) {
-            String sqlGenre = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?)";
-            for (Genre genre : film.getGenres()) {
-                jdbcTemplate.update(sqlGenre, film.getId(), genre.getId());
-            }
-        }
+        genreStorage.postGenresByFilm(film);
+
         log.info("Добавлен фильм под названием {} с id: {}", film.getName(), film.getId());
 
 
@@ -122,7 +121,6 @@ public class FilmDbStorage implements FilmStorage {
         String sql = ("SELECT * FROM FILMS WHERE FILM_ID=?");
         SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sql, id);
         if (sqlRowSet.next()) film = filmFromRows(sqlRowSet).get();
-
 
         log.info("Найден фильм с id = {}", id);
         return film;
@@ -202,12 +200,7 @@ public class FilmDbStorage implements FilmStorage {
                 .build();
 
 
-        String genresSql = "SELECT * FROM FILM_GENRE WHERE FILM_ID =? ORDER BY GENRE_ID ASC";
-        SqlRowSet sqlGenres = jdbcTemplate.queryForRowSet(genresSql, film.getId());
-        while (sqlGenres.next()){
-            film.getGenres().add(
-                    genreStorage.getGenre(sqlGenres.getInt("GENRE_ID")));
-        }
+        film.getGenres().addAll(genreStorage.getGenresByFilm(film.getId()));
 
         log.info("Найден фильм с id: {} с названием: {}", film.getId(), film.getName());
 

@@ -7,6 +7,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.GenreNotFoundException;
 import ru.yandex.practicum.filmorate.exception.MpaNotFoundException;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
@@ -45,6 +46,30 @@ public class GenreDbStorage implements GenreStorage {
         }
         log.info("Всего жанров: " + allGenres.size());
         return allGenres;
+    }
+
+    @Override
+    public List<Genre> getGenresByFilm(Integer filmId) {
+        List<Genre> genres = new ArrayList<>();
+        String genresSql = "SELECT * FROM FILM_GENRE WHERE FILM_ID =? ORDER BY GENRE_ID ASC";
+        SqlRowSet sqlGenres = jdbcTemplate.queryForRowSet(genresSql, filmId);
+        while (sqlGenres.next()) {
+            genres.add(
+                    getGenre(sqlGenres.getInt("GENRE_ID")));
+        }
+
+        return genres;
+    }
+
+
+    @Override
+    public void postGenresByFilm(Film film) {
+        if (!film.getGenres().isEmpty() || film.getGenres() != null) {
+            String sqlGenre = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?)";
+            for (Genre genre : film.getGenres()) {
+                jdbcTemplate.update(sqlGenre, film.getId(), genre.getId());
+            }
+        }
     }
 
     private Genre build(SqlRowSet userRows) {
