@@ -65,22 +65,9 @@ public class FilmDbStorage implements FilmStorage {
 
         jdbcTemplate.update("delete from FILM_GENRE where FILM_ID = ? ", film.getId()); //обнуление информации о жанрах фильма
 
-/*        if (!film.getGenres().isEmpty() || film.getGenres() != null) {
-            String sqlGenre = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?)";
-            for (Genre genre : film.getGenres()) {
-                jdbcTemplate.update(sqlGenre, film.getId(), genre.getId());
-            }
-        }*/
-
         genreStorage.postGenresByFilm(film);
+
         film.getGenres().clear();
-/*
-        String genresSql = "SELECT * FROM FILM_GENRE WHERE FILM_ID =? ORDER BY GENRE_ID ASC";
-        SqlRowSet sqlGenres = jdbcTemplate.queryForRowSet(genresSql, film.getId());
-        while (sqlGenres.next()) {
-            film.getGenres().add(
-                    genreStorage.getGenre(sqlGenres.getInt("GENRE_ID")));
-        }*/
 
         film.getGenres().addAll(genreStorage.getGenresByFilm(film.getId()));
 

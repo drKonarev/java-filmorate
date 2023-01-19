@@ -78,7 +78,8 @@ public class InMemoryUserStorage implements UserStorage {
                 .build();
     }
 
-    private void validate(User user) {
+    @Override
+    public void validate(User user) {
         if (user.getLogin().contains(" ") || user.getLogin().isBlank())
             throw new ValidationException("Incorrect login format!");
     }

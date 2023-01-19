@@ -9,10 +9,12 @@ import ru.yandex.practicum.filmorate.exception.GenreNotFoundException;
 import ru.yandex.practicum.filmorate.exception.MpaNotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.storage.GenreStorage;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Component
@@ -64,10 +66,22 @@ public class GenreDbStorage implements GenreStorage {
 
     @Override
     public void postGenresByFilm(Film film) {
-        if (!film.getGenres().isEmpty() || film.getGenres() != null) {
-            String sqlGenre = "INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?)";
-            for (Genre genre : film.getGenres()) {
-                jdbcTemplate.update(sqlGenre, film.getId(), genre.getId());
+
+        if (!film.getGenres().isEmpty()) {
+            try {
+                jdbcTemplate.getDataSource().getConnection().setAutoCommit(false);
+                try (PreparedStatement ps = jdbcTemplate.getDataSource().getConnection().prepareStatement
+                        ("INSERT INTO FILM_GENRE (FILM_ID, GENRE_ID) VALUES (?, ?)")) {
+                    for (Genre genre : film.getGenres()) {
+                        ps.setInt(1, film.getId());
+                        ps.setInt(2, genre.getId());
+
+                        ps.addBatch();
+                    }
+                    ps.executeBatch();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
         }
     }

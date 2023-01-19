@@ -27,4 +27,6 @@ public interface UserStorage {
 
     void check (Integer id);
 
+    void validate (User user);
+
 }

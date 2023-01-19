@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.UserNotFoundException;
+import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
@@ -38,6 +39,7 @@ public class UserDbStorage implements UserStorage {
     @Override
     public User post(User user) {
 
+        validate(user);
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("USERS")
                 .usingGeneratedKeyColumns("USER_ID");
@@ -61,7 +63,7 @@ public class UserDbStorage implements UserStorage {
 
     @Override
     public User put(User user) {
-
+        validate(user);
         check(user.getId());
 
         String sqlQuery = ("UPDATE USERS SET NAME=?, EMAIL = ?, BIRTHDAY = ?, LOGIN = ? WHERE USER_ID=" + user.getId());
@@ -145,8 +147,8 @@ public class UserDbStorage implements UserStorage {
         check(userId);
         check(friendId);
 
-        jdbcTemplate.update(" INSERT INTO FRIENDS VALUES (?, ?)", userId, friendId);
-        log.info("Теперь с пользователем: {} дружит пользователь: {} ", friendId, userId);
+        jdbcTemplate.update(" INSERT INTO FRIENDS VALUES (?, ?)",  friendId,userId);
+        log.info("Пользователь id: {} отправил запрос на дружбу пользователю id: {} ",  userId, friendId);
     }
 
     @Override
@@ -179,5 +181,12 @@ public class UserDbStorage implements UserStorage {
         SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(sqlCheck, id);
         if (!sqlRowSet.next()) throw new UserNotFoundException("Не найден пользователь с id = " + id);
 
+    }
+
+    @Override
+    public void validate(User user) {
+        if (user.getLogin().isBlank() || user.getLogin().contains(" ")) {
+            throw new ValidationException("Ошибка при валидации поля 'login'");
+        }
     }
 }
