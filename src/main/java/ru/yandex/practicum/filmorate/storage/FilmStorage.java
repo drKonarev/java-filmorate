@@ -20,4 +20,7 @@ public interface FilmStorage {
 
     void disLike(Integer filmId, Integer userId);
 
+    void check (Integer id);
+    public List<Film> getTopFilms(Integer count);
+
 }

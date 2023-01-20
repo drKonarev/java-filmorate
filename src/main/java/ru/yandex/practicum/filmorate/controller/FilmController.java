@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.service.FilmService;
 import javax.validation.Valid;
 import java.util.List;
 
-import static java.lang.String.format;
 
 @RestController()
 @RequestMapping("/films")
@@ -61,7 +60,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> top(@RequestParam(defaultValue = "10", required = false) Integer count) {
+    public List<Film> top (@RequestParam ( defaultValue = "10", required = false, name = "count" ) Integer count) {
         return filmService.getTopFilms(count);
     }
 

@@ -1,18 +1,22 @@
 package ru.yandex.practicum.filmorate.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class UserService {
-    UserStorage userStorage;
+    private final UserStorage userStorage;
 
-    public UserService(UserStorage userStorage) {
+    private final Logger log = LoggerFactory.getLogger(UserService.class);
+
+    public UserService(@Qualifier("UserDbStorage") UserStorage userStorage) {
         this.userStorage = userStorage;
     }
 
@@ -20,7 +24,7 @@ public class UserService {
         userStorage.delete(id);
     }
 
-    public User get(Integer id) {
+    public Optional<User> get(Integer id) {
         return userStorage.get(id);
     }
 
@@ -36,35 +40,23 @@ public class UserService {
         return userStorage.getAllUsers();
     }
 
-    public void addFriend(Integer id, Integer friendId) {
-        if (Objects.equals(id, friendId)) throw new RuntimeException("You can't add yourself to friendList");
-        User user = userStorage.get(id);
-        User friend = userStorage.get(friendId);
-        user.addFriend(friendId);
-        friend.addFriend(id);
+
+
+    public void addFriend(Integer userId, Integer friendId){
+        if (userId.equals(friendId)) throw new RuntimeException ("Невозможно добавить самого себя в друзья!");
+        userStorage.addFriend(userId,friendId);
     }
 
-    public void deleteFriend(Integer id, Integer friendId) {
-        User user = userStorage.get(id);
-        User friend = userStorage.get(friendId);
-        user.getFriends().remove(friendId);
-        friend.getFriends().remove(id);
-
-    }
-
-    public List<User> commonFriends(Integer firstId, Integer secondId) {
-        User first = userStorage.get(firstId);
-        User second = userStorage.get(secondId);
-        List<User> commonFriends = new ArrayList<>();
-        for (Integer id : second.getFriends()) {
-            if (first.getFriends().contains(id)) {
-                commonFriends.add(userStorage.get(id));
-            }
-        }
-        return commonFriends;
+    public void deleteFriend(Integer userId, Integer friendId) {
+        if (userId.equals(friendId)) throw new RuntimeException ("Невозможно удалить самого себя из друзей!");
+       userStorage.deleteFriend(userId, friendId);
     }
 
 
+
+public List <User> getCommonFriends (Integer userId, Integer friendId){
+        return userStorage.getCommonFriends(userId, friendId);
+}
     public List<User> getFriends(Integer id) {
         return userStorage.getAllFriends(id);
     }
